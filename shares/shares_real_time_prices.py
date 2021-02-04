@@ -1,0 +1,40 @@
+__author__ = 'felix'
+# 新浪获取股票行情接口详解：https://blog.csdn.net/simon803/article/details/7784682
+import requests
+import time
+from queue import Queue
+
+
+class Stock(object):
+    def __init__(self, code, sleep_time):
+        self.code = code
+        self.work_queue = Queue()
+        self.sleep_time = sleep_time
+
+    def value_price_get(self):
+        slice_num, value_num = 21, 3
+        name, now = '', ''
+        if self.code in ['s_sh000001', 's_sz399001']:
+            slice_num = 23
+            value_num = 1
+        response = requests.get("http://hq.sinajs.cn/list=%s" % self.code)
+        res_list = response.text.replace('\n', '').split(';')
+        res_dict = {}
+        for r in res_list:
+            res = r.split(',')
+            if len(res) > 1:
+                name, now = res[0][slice_num:], res[value_num]
+            res_dict[name] = now
+        self.work_queue.put(res_dict)
+
+    def run(self):
+        for i in self.code.split(','):
+            if i[:-6] not in ('sh', 'sz', 's_sh', 's_sz'):
+                raise ValueError
+        while True:
+            self.value_price_get()
+            time.sleep(self.sleep_time)
+
+
+if __name__ == '__main__':
+    pass
