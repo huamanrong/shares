@@ -1,7 +1,7 @@
 import logging
 
 
-def my_log(log_name='auto_cases', level='DEBUG', file_path='lyb_logging.out'):
+def my_log(log_name='auto_cases', level='DEBUG', file_path='logging.out'):
     logger = logging.getLogger(log_name)
     logger.setLevel(level)  # 日志收集器的级别
 
