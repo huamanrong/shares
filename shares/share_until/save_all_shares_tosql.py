@@ -33,7 +33,7 @@ def insert_all_shares():
     insert_sql = 'insert into all_shares(symbol,ts_code,`name`,area,industry,market,list_status,list_date)values'
     all_share = ','.join(share_list)
     insert_sql += all_share
-    print(insert_sql)
+    # print(insert_sql)
 
     cnn = pymysql.connect(**conf)
     cursor = cnn.cursor()

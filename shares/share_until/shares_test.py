@@ -1,5 +1,5 @@
 import threading
-from shares.shares_real_time_prices import Stock
+from shares.share_until.shares_real_time_prices import Stock
 
 
 if __name__ == '__main__':
