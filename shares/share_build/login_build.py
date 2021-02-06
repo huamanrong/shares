@@ -33,14 +33,17 @@ class LoginBuild:
         ttk.Entry(self.frame_login, width=20, textvariable=self.account).place(relx=0.43, rely=0.3)
         ttk.Label(self.frame_login, text='管理密码:').place(relx=0.3, rely=0.45)
         ttk.Entry(self.frame_login, show='*', width=20, textvariable=self.password).place(relx=0.43, rely=0.45)
-        self.login_obj = LoginServer(self.root, self.account.get(), self.password.get(), self.frame_page,self.logger)
-        login_button = ttk.Button(self.frame_login, text='登录', command=self.login_obj.login)
+        login_button = ttk.Button(self.frame_login, text='登录', command=self.login)
         login_button.place(relx=0.42, rely=0.6)
         self.root.bind('<Return>', self.login_return_callback)
         ttk.Label(self.frame_login, text='作者：工具人').place(relx=0.8, rely=0.9)
 
     def login_return_callback(self, event):
-        self.login_obj.login()
+        self.login()
+
+    def login(self):
+        login_obj = LoginServer(self.account.get(), self.password.get())
+        login_obj.login()
 
     def again_login(self):
         if self.frame_page['frame']:
