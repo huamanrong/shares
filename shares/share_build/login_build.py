@@ -10,6 +10,8 @@ from shares.share_server.login_server import LoginServer
 class LoginBuild:
     def __init__(self, root):
         self.root = root
+        style = ttk.Style()
+        style.theme_use("vista")
         self.root.title('股票管理')
         self.root.geometry("500x400+700+200")
         self.root.resizable(0, 0)
@@ -17,6 +19,8 @@ class LoginBuild:
         self.logger = my_log()
         self.account = tk.StringVar()
         self.password = tk.StringVar()
+        self.account.set('xiaohu')
+        self.password.set('123456')
         self.login_build()
 
     @staticmethod
@@ -42,8 +46,14 @@ class LoginBuild:
         self.login()
 
     def login(self):
-        login_obj = LoginServer(self.account.get(), self.password.get())
-        login_obj.login()
+        login_obj = LoginServer(self.account.get(), self.password.get(), self.logger)
+        response = login_obj.login()
+        if response[0]:
+            messagebox.showinfo('登录提示', response[1])
+        else:
+            self.frame_login.destroy()
+            self.root.unbind('<Return>')
+            self.menu_page()
 
     def again_login(self):
         if self.frame_page['frame']:
@@ -51,20 +61,42 @@ class LoginBuild:
         self.menu_bar.destroy()
         self.login_build()
 
+    def quit(self):
+        self.root.destroy()
+
     def menu_page(self):
         self.menu_bar = Menu(self.root)
         self.root["menu"] = self.menu_bar
         file_menu = Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label='菜单', menu=file_menu)
         file_menu.add_command(label='重新登录', command=self.again_login)
+        file_menu.add_separator()
         file_menu.add_command(label='退出程序', command=self.quit)
 
-        function_menu = Menu(self.menu_bar, tearoff=0)
-        self.menu_bar.add_cascade(label='功能', menu=function_menu)
-        function_menu.add_command(label='股票预警', command='')
+        operation_menu = Menu(self.menu_bar, tearoff=0)
+        self.menu_bar.add_cascade(label='股票操作', menu=operation_menu)
+        operation_menu.add_command(label='持仓', command='')
+        operation_menu.add_command(label='买入', command='')
+        operation_menu.add_command(label='卖出', command='')
 
-    def quit(self):
-        self.root.destroy()
+        early_warning_menu = Menu(self.menu_bar, tearoff=0)
+        self.menu_bar.add_cascade(label='股票预警', menu=early_warning_menu)
+        early_warning_menu.add_command(label='添加预警', command='')
+        early_warning_menu.add_command(label='预警列表', command='')
+
+        plan_menu = Menu(self.menu_bar, tearoff=0)
+        self.menu_bar.add_cascade(label='计划', menu=plan_menu)
+        plan_menu.add_command(label='近期操作计划', command='')
+        plan_menu.add_command(label='股票池', command='')
+
+        log_menu = Menu(self.menu_bar, tearoff=0)
+        self.menu_bar.add_cascade(label='股票日志', menu=log_menu)
+        log_menu.add_command(label='添加日志', command='')
+        log_menu.add_command(label='日志列表', command='')
+
+        help_menu = Menu(self.menu_bar, tearoff=0)
+        self.menu_bar.add_cascade(label='帮助', menu=help_menu)
+        help_menu.add_command(label='关于', command='')
 
 
 if __name__ == '__main__':
