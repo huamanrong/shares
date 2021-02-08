@@ -5,12 +5,14 @@ from tkinter import messagebox
 import threading
 from shares.share_until.standard_logging import my_log
 from shares.share_server.login_server import LoginServer
+from shares.share_build.hold_shares_build import HoldSharesBuild
 
 
 class LoginBuild:
     def __init__(self, root):
         self.root = root
         style = ttk.Style()
+        style.configure('Treeview', rowheight=25)
         style.theme_use("vista")
         self.root.title('股票管理')
         self.root.geometry("500x400+700+200")
@@ -73,11 +75,13 @@ class LoginBuild:
         file_menu.add_separator()
         file_menu.add_command(label='退出程序', command=self.quit)
 
+        hold_share = HoldSharesBuild(self.root, self.frame_page, self.logger)
         operation_menu = Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label='股票操作', menu=operation_menu)
-        operation_menu.add_command(label='持仓', command='')
+        operation_menu.add_command(label='持仓', command=hold_share.hold_shares_build())
         operation_menu.add_command(label='买入', command='')
         operation_menu.add_command(label='卖出', command='')
+        operation_menu.add_command(label='已清仓', command='')
 
         early_warning_menu = Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label='股票预警', menu=early_warning_menu)

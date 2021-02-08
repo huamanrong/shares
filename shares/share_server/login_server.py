@@ -13,6 +13,10 @@ class LoginServer:
             return 1, '账户或密码未输入'    # 0是登录成功，1是登录失败
         elif len(self.account) > 20 or len(self.password) > 20:
             return 1, '账户或密码未输入'
+        elif [i for i in filter(lambda x: not (x.isdigit() or x.isalpha() or x == '_'), self.account)]:
+            return 1, '账号只能包含数字,字母和下划线'
+        elif [i for i in filter(lambda x: not (x.isdigit() or x.isalpha() or x == '_'), self.password)]:
+            return 1, '密码只能只能包含数字,字母和下划线'
         elif self.account and self.password:
             conf = database.conf
             sql = 'select id from user where name="%s" and password="%s"' % (self.account, self.password)
@@ -21,3 +25,7 @@ class LoginServer:
                 return 1, '账户或密码错误'
             else:
                 return 0, result[0][0]
+
+
+if __name__ == '__main__':
+    pass
