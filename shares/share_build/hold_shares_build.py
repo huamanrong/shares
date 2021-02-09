@@ -1,6 +1,7 @@
 __author__ = '工具人'
+import Pmw  # tkinter扩展包，需要导入
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk
 from shares.share_until.creat_thread import create_thread
 from shares.share_server.hold_shares_lists_server import HoldSharesListsServer
 from shares.share_build.toplevel_notebook.shares_operation_notebook_build import SharesOperationNotebookBuild
@@ -25,7 +26,8 @@ class HoldSharesBuild:
         self.tree = ttk.Treeview(self.frame_hold_shares, show='headings', height=20, columns=['0', '1', '2', '3', '4', '5'], yscrollcommand=y_bar.set)
         y_bar['command'] = self.tree.yview
         y_bar.pack(side='right', fill='y')
-        self.tree.bind("<<TreeviewSelect>>", self.trigger_call_toplevel)     # 监听tree中item被选中的事件
+        self.tree.bind("<Double-Button-1>", self.trigger_call_toplevel)     # 监听tree中item双击事件
+        self.tree.bind("<Enter>", self.tips_window)     # 监听鼠标移动到Tree view区域事件
         self.tree.heading(0, text='名称')
         self.tree.heading(1, text='盈亏')
         self.tree.heading(2, text='成本/现价')
@@ -42,6 +44,10 @@ class HoldSharesBuild:
         self.tree.column(5, anchor='center', width=100)
         self.tree.pack(expand=1, fill='both')
         create_thread(self.update_tree_items_loop)
+
+    def tips_window(self, *args):
+        balloon = Pmw.Balloon(self.frame_hold_shares)
+        balloon.bind(self.tree, '双击进行股票操作')
 
     def set_tree_items(self, queue_value):
         items = self.tree.get_children()
@@ -72,8 +78,6 @@ class HoldSharesBuild:
         # 最多有1个弹窗
         if not self.items_Toplevel:
             self.toplevel_build()
-        elif self.tree.focus() in self.items_Toplevel.values():
-            pass
         elif self.tree.focus() not in self.items_Toplevel.values():
             self.window.destroy()
             del self.items_Toplevel[self.window]
@@ -88,12 +92,12 @@ class HoldSharesBuild:
         if screenwidth > main_x + main_width + 400:     # 主窗口右边空间足够，弹窗就展示在右边，不够的话就弹窗展示在主窗口左边
             self.window.geometry("400x300+%s+%s" % (int(main_x + main_width+5), int(main_y)))
         else:
-            self.window.geometry("400x300+%s+%s" % (int(main_x - 400 -5), int(main_y)))
+            self.window.geometry("400x300+%s+%s" % (int(main_x - 400 - 5), int(main_y)))
 
         select_item = self.tree.item(self.tree.selection(), "values")
 
         self.window.title(select_item[0])
-        shares_notebook = SharesOperationNotebookBuild(self.window,self.logger, self.shares_user, select_item[0])
+        shares_notebook = SharesOperationNotebookBuild(self.window, self.logger, self.shares_user, select_item[0])
         shares_notebook.shares_operation_notebook()
         self.window.protocol("WM_DELETE_WINDOW", self.on_closing)  # protocol方法为此协议安装处理程序，此处用户关闭窗口的时间触发
         self.window.mainloop()

@@ -22,8 +22,8 @@ class LoginServer:
             conf = database.conf
             hex_str = HexAndStr()
             hex_password = hex_str.string_to_HexString(self.password)
-            sql = 'select id from shares_user where name="%s" and password="%s"' % (self.account, hex_password)
-            result = execute_select_sql(conf, sql, self.logger)
+            sql = 'select id from shares_user where name=%s and password=%s'
+            result = execute_select_sql(conf, sql, self.logger, self.account, hex_password)
             if not result:
                 return 1, '账户或密码错误'
             else:

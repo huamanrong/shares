@@ -29,9 +29,9 @@ class HoldSharesListsServer:
             AND buy_already.symbol=all_shares.symbol
             AND shares_user.id = buy_already.user_id
             ORDER BY buy_already.buy_datetime
-        ''' % self.shares_user
+        '''
         conf = database.conf
-        result = execute_select_sql(conf, sql, self.logger)
+        result = execute_select_sql(conf, sql, self.logger, self.shares_user)
         # print(result)   # (('sh600884', '杉杉股份', 14.0, 500, 41000.0), ('sz000008', '神州高铁', 2.0, 1000, 41000.0))
         if result:
             join_list = [ts_code[0] for ts_code in result]
@@ -44,7 +44,7 @@ class HoldSharesListsServer:
             self.tree.heading(4, text='当日盈亏') 当日盈亏
             self.tree.heading(5, text='仓位') 仓位
             '''
-            share = Stock(join_ts_code, 20)     # 第二个参数是控制获取实时股票信息的频率，这个频率非常重要
+            share = Stock(join_ts_code, 20)  # 第二个参数是控制获取实时股票信息的频率，这个频率非常重要
             create_thread(share.run)
             while True:
                 queue_value = share.work_queue.get()  # {'杉杉股份': '14.870,15.540', '神州高铁': '2.180,2.170'}
@@ -52,14 +52,14 @@ class HoldSharesListsServer:
                 share.work_queue.task_done()
                 if queue_value:
                     new_result = []
-                    hold_shares_amount = 0    # 股票总市值，计算仓位用的，仓位计算：当前股票总市值/(所有股票总市值+流动资金)
+                    hold_shares_amount = 0  # 股票总市值，计算仓位用的，仓位计算：当前股票总市值/(所有股票总市值+流动资金)
                     for shares_msg in result:
                         sub_list = []
                         price_list = queue_value[shares_msg[1]].split(',')
                         price_list = [float(price) for price in price_list]
-                        total_profit = round(price_list[0]*shares_msg[3]-shares_msg[2]*shares_msg[3], 2)
-                        today_profit = round((price_list[0]-price_list[1])*shares_msg[3], 2)
-                        hold_shares_amount += price_list[0]*shares_msg[3]
+                        total_profit = round(price_list[0] * shares_msg[3] - shares_msg[2] * shares_msg[3], 2)
+                        today_profit = round((price_list[0] - price_list[1]) * shares_msg[3], 2)
+                        hold_shares_amount += price_list[0] * shares_msg[3]
                         sub_list.append(shares_msg[1])
                         sub_list.append(total_profit)
                         sub_list.append('%s/%s' % (shares_msg[2], price_list[0]))
@@ -67,9 +67,9 @@ class HoldSharesListsServer:
                         sub_list.append(today_profit)
                         new_result.append(sub_list)
                     for index, sub_msg in enumerate(new_result):
-                        shares_amount = float(sub_msg[2].split('/')[1])*sub_msg[3]
-                        total_amount = hold_shares_amount+result[0][4]
-                        position = '{:.1%}' .format(round(shares_amount/total_amount, 3))
+                        shares_amount = float(sub_msg[2].split('/')[1]) * sub_msg[3]
+                        total_amount = hold_shares_amount + result[0][4]
+                        position = '{:.1%}'.format(round(shares_amount / total_amount, 3))
                         new_result[index].append(position)
                     # print(new_result)
                     self.work_queue.put(new_result)
