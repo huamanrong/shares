@@ -2,7 +2,6 @@ __author__ = '工具人'
 import tkinter as tk
 from tkinter import ttk, Menu
 from tkinter import messagebox
-import threading
 from shares.share_until.standard_logging import my_log
 from shares.share_server.login_server import LoginServer
 from shares.share_build.hold_shares_build import HoldSharesBuild
@@ -19,17 +18,12 @@ class LoginBuild:
         self.root.resizable(0, 0)
         self.frame_page = {'frame': None}
         self.logger = my_log()
+        self.shares_user = None
         self.account = tk.StringVar()
         self.password = tk.StringVar()
         self.account.set('xiaohu')
         self.password.set('123456')
         self.login_build()
-
-    @staticmethod
-    def create_thread(func, *args):
-        t = threading.Thread(target=func, args=args)
-        t.setDaemon(True)
-        t.start()
 
     def login_build(self):
         self.frame_login = tk.Frame(self.root)
@@ -53,6 +47,7 @@ class LoginBuild:
         if response[0]:
             messagebox.showinfo('登录提示', response[1])
         else:
+            self.shares_user = response[1]
             self.frame_login.destroy()
             self.root.unbind('<Return>')
             self.menu_page()
@@ -75,7 +70,7 @@ class LoginBuild:
         file_menu.add_separator()
         file_menu.add_command(label='退出程序', command=self.quit)
 
-        hold_share = HoldSharesBuild(self.root, self.frame_page, self.logger)
+        hold_share = HoldSharesBuild(self.root, self.frame_page, self.shares_user, self.logger)
         operation_menu = Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label='股票操作', menu=operation_menu)
         operation_menu.add_command(label='持仓', command=hold_share.hold_shares_build())

@@ -13,7 +13,7 @@ class Stock(object):
 
     def value_price_get(self):
         slice_num, value_num = 21, 3
-        name, now = '', ''
+        name, now, yesterday = '', '', ''
         if self.code in ['s_sh000001', 's_sz399001']:
             slice_num = 23
             value_num = 1
@@ -23,8 +23,8 @@ class Stock(object):
         for r in res_list:
             res = r.split(',')
             if len(res) > 1:
-                name, now = res[0][slice_num:], res[value_num]
-            res_dict[name] = now
+                name, now, yesterday = res[0][slice_num:], res[value_num], res[2]
+            res_dict[name] = '%s,%s' % (now, yesterday)
         self.work_queue.put(res_dict)
 
     def run(self):
