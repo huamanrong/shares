@@ -73,7 +73,7 @@ class LoginBuild:
         hold_share = HoldSharesBuild(self.root, self.frame_page, self.shares_user, self.logger)
         operation_menu = Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label='股票操作', menu=operation_menu)
-        operation_menu.add_command(label='持仓', command=hold_share.hold_shares_build())
+        operation_menu.add_command(label='持仓', command=hold_share.hold_shares_build)
         operation_menu.add_command(label='买入', command='')
         operation_menu.add_command(label='卖出', command='')
         operation_menu.add_command(label='已清仓', command='')
@@ -96,6 +96,7 @@ class LoginBuild:
         help_menu = Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label='帮助', menu=help_menu)
         help_menu.add_command(label='关于', command='')
+        hold_share.hold_shares_build()
 
 
 if __name__ == '__main__':

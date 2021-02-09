@@ -32,7 +32,7 @@ class HoldSharesListsServer:
         ''' % self.shares_user
         conf = database.conf
         result = execute_select_sql(conf, sql, self.logger)
-        print(result)   # (('sh600884', '杉杉股份', 14.0, 500, 41000.0), ('sz000008', '神州高铁', 2.0, 1000, 41000.0))
+        # print(result)   # (('sh600884', '杉杉股份', 14.0, 500, 41000.0), ('sz000008', '神州高铁', 2.0, 1000, 41000.0))
         if result:
             join_list = [ts_code[0] for ts_code in result]
             join_ts_code = ','.join(join_list)
@@ -44,7 +44,7 @@ class HoldSharesListsServer:
             self.tree.heading(4, text='当日盈亏') 当日盈亏
             self.tree.heading(5, text='仓位') 仓位
             '''
-            share = Stock(join_ts_code, 5)     # 第二个参数是控制获取实时股票信息的频率，这个频率非常重要
+            share = Stock(join_ts_code, 20)     # 第二个参数是控制获取实时股票信息的频率，这个频率非常重要
             create_thread(share.run)
             while True:
                 queue_value = share.work_queue.get()  # {'杉杉股份': '14.870,15.540', '神州高铁': '2.180,2.170'}
@@ -69,7 +69,7 @@ class HoldSharesListsServer:
                     for index, sub_msg in enumerate(new_result):
                         shares_amount = float(sub_msg[2].split('/')[1])*sub_msg[3]
                         total_amount = hold_shares_amount+result[0][4]
-                        position = '{0}%' .format(round(shares_amount/total_amount, 4)*100)
+                        position = '{:.1%}' .format(round(shares_amount/total_amount, 3))
                         new_result[index].append(position)
-                    print(new_result)
+                    # print(new_result)
                     self.work_queue.put(new_result)
