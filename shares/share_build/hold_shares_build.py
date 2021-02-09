@@ -21,6 +21,7 @@ class HoldSharesBuild:
         if self.frame_page['frame']:
             self.frame_page['frame'].destroy()
         self.frame_hold_shares= ttk.Frame(self.root)
+        self.frame_page['frame'] = self.frame_hold_shares
         self.frame_hold_shares.pack(expand='yes', fill=tk.BOTH)
         y_bar = ttk.Scrollbar(self.frame_hold_shares, orient=tk.VERTICAL)
         self.tree = ttk.Treeview(self.frame_hold_shares, show='headings', height=20, columns=['0', '1', '2', '3', '4', '5'], yscrollcommand=y_bar.set)
