@@ -24,3 +24,23 @@ class DetailsNotebookBuild:
         self.canvas.bind_all("<MouseWheel>",
                              lambda event: self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units"))
 
+        # from tkinter import *
+        #
+        # main_page = Tk()
+        # main_page.geometry("400x300")
+        # cv_mian = Canvas(main_page, scrollregion=(0, 0, 400, 600))
+        # cv_mian.pack(expand='yes', fill=BOTH)
+        # frame1 = Frame(cv_mian)
+        # frame1.pack(side=LEFT, fill=BOTH)
+        #
+        # vbar = Scrollbar(cv_mian, orient=VERTICAL, command=cv_mian.yview)  # 竖直滚动条
+        # vbar.pack(side=RIGHT, fill=Y)
+        # cv_mian.configure(yscrollcommand=vbar.set)
+        #
+        # cv_mian.bind_all("<MouseWheel>", lambda event: cv_mian.yview_scroll(int(-1 * (event.delta / 120)), "units"))
+        # cv_mian.create_window(0, 0, window=frame1, anchor='nw', width=400, height=1000)
+        # main_page.resizable()
+        # for i in range(20):
+        #     Label(frame1, text='%s' % i).grid()
+        # main_page.mainloop()
+
