@@ -1,18 +1,19 @@
 import threading
+import tkinter as tk
 from tkinter import *
 from tkinter.ttk import *
 from shares.share_until.shares_real_time_prices import Stock
 
 
 if __name__ == '__main__':
-    share = Stock('sh600884,sz000008', 5)
-    thread = threading.Thread(target=share.run)
-    thread.start()
-    while True:
-        msg = share.work_queue.get()
-        if msg:
-            print('hello world', msg)
-        share.work_queue.task_done()
+    # share = Stock('sh600884,sz000008')
+    # thread = threading.Thread(target=share.run)
+    # thread.start()
+    # while True:
+    #     msg = share.work_queue.get()
+    #     if msg:
+    #         print('hello world', msg)
+    #     share.work_queue.task_done()
     pass
 
 
@@ -171,4 +172,4 @@ class MyTk:
                 self.all_buttonvar.set(1)
 
 
-# MyTk()
+MyTk()

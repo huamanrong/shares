@@ -1,15 +1,13 @@
 __author__ = 'felix'
 # 新浪获取股票行情接口详解：https://blog.csdn.net/simon803/article/details/7784682
 import requests
-import time
 from queue import Queue
 
 
 class Stock(object):
-    def __init__(self, code, sleep_time):
+    def __init__(self, code):
         self.code = code
         self.work_queue = Queue()
-        self.sleep_time = sleep_time
 
     def value_price_get(self):
         slice_num, value_num = 21, 3
@@ -31,9 +29,10 @@ class Stock(object):
         for i in self.code.split(','):
             if i[:-6] not in ('sh', 'sz', 's_sh', 's_sz'):
                 raise ValueError
-        while True:
-            self.value_price_get()
-            time.sleep(self.sleep_time)
+        # while True:
+        #     self.value_price_get()
+        #     time.sleep(self.sleep_time)
+        self.value_price_get()
 
 
 if __name__ == '__main__':

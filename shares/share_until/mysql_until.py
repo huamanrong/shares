@@ -1,6 +1,17 @@
 import pymysql
 
 
+'''
+执行增删改之类的更新数据库操作，步骤和格式为：
+cnn = get_connect(database.conf)  # 1.获取数据库连接
+try:
+    execute_change_sql(cnn, insert_transaction_records， args) 2.执行sql
+    commit_close(cnn)    # 3.提交数据库操作并关闭连接
+except:
+    mysql_rollback(cnn)     # 4.如果执行报错就回滚并关闭数据库连接
+'''
+
+
 def get_connect(conf):
     cnn = pymysql.connect(**conf)
     cursor = cnn.cursor()

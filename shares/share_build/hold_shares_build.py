@@ -1,4 +1,5 @@
 __author__ = '工具人'
+import time
 import Pmw  # tkinter扩展包，需要导入
 import tkinter as tk
 from tkinter import ttk
@@ -55,6 +56,10 @@ class HoldSharesBuild:
         if not self.tree.get_children():    # 一开始列表没有数据，就插入
             for index, item in enumerate(queue_value):
                 self.tree.insert("", index, values=item)
+        elif len(items) != len(queue_value):
+            [self.tree.delete(item) for item in items]
+            for index, item in enumerate(queue_value):
+                self.tree.insert("", index, values=item)
         else:       # 有数据就修改，不进行删除
             for index_1, item_1 in enumerate(items):
                 for index_2 in range(len(queue_value[0])):
@@ -62,13 +67,14 @@ class HoldSharesBuild:
 
     def update_tree_items_loop(self):
         hold_server = HoldSharesListsServer(self.shares_user, self.logger)
-        create_thread(hold_server.get_items_value)
         while '工具人':
+            hold_server.get_items_value()
             queue_value = hold_server.work_queue.get()
             print('queue_value', queue_value)
             hold_server.work_queue.task_done()
-            if queue_value:
-                self.set_tree_items(queue_value)
+            # if queue_value:
+            self.set_tree_items(queue_value)
+            time.sleep(10)
 
     def on_closing(self):   # 子窗口关闭的回调函数
         del self.items_Toplevel[self.window]

@@ -12,3 +12,15 @@ class DetailsNotebookBuild:
         self.logger = logger
         self.shares_user = shares_user
         self.shares_name = shares_name
+
+    def details_notebook_build(self):
+        self.canvas = tk.Canvas(self.root)  # , width=500, height=500, scrollregion=(0, 0, 500, 400)
+        self.canvas.pack(fill='both', expand=1)
+        # 滚动条
+        ysb = ttk.Scrollbar(self.root, orient=tk.VERTICAL, command=self.canvas.yview)
+        self.canvas.configure(yscrollcommand=ysb.set)
+        ysb.pack(side='right', fill='y')
+        # !!!!=======重点：鼠标滚轮滚动时，改变的页面是canvas 而不是treeview
+        self.canvas.bind_all("<MouseWheel>",
+                             lambda event: self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units"))
+

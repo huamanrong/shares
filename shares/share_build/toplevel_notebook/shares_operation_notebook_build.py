@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 from shares.share_build.toplevel_notebook.buy_notebook_build import BuyNotebookBuild
 from shares.share_build.toplevel_notebook.sell_notebook_build import SellNotebookBuild
+from shares.share_build.toplevel_notebook.details_notebook_build import DetailsNotebookBuild
 
 
 class SharesOperationNotebookBuild:
@@ -31,3 +32,4 @@ class SharesOperationNotebookBuild:
         BuyNotebookBuild(self.frame_buy, self.logger, self.shares_user, self.shares_name).buy_note_build()
         SellNotebookBuild(self.frame_sell, self.logger, self.shares_user, self.shares_name).sell_note_build()
 
+        DetailsNotebookBuild(self.frame_details, self.logger, self.shares_user, self.shares_name).details_notebook_build()
