@@ -1,6 +1,6 @@
 __author__ = '工具人'
 import time
-import Pmw  # tkinter扩展包，需要导入
+# import Pmw  # tkinter扩展包，需要导入
 import tkinter as tk
 from tkinter import ttk
 from shares.share_until.creat_thread import create_thread
@@ -29,7 +29,7 @@ class HoldSharesBuild:
         y_bar['command'] = self.tree.yview
         y_bar.pack(side='right', fill='y')
         self.tree.bind("<Double-Button-1>", self.trigger_call_toplevel)     # 监听tree中item双击事件
-        self.tree.bind("<Enter>", self.tips_window)     # 监听鼠标移动到Tree view区域事件
+        # self.tree.bind("<Enter>", self.tips_window)     # 监听鼠标移动到Tree view区域事件
         self.tree.heading(0, text='名称')
         self.tree.heading(1, text='盈亏')
         self.tree.heading(2, text='成本/现价')
@@ -47,9 +47,9 @@ class HoldSharesBuild:
         self.tree.pack(expand=1, fill='both')
         create_thread(self.update_tree_items_loop)
 
-    def tips_window(self, *args):
-        balloon = Pmw.Balloon(self.frame_hold_shares)
-        balloon.bind(self.tree, '双击进行股票操作')
+    # def tips_window(self, *args):
+    #     balloon = Pmw.Balloon(self.frame_hold_shares)
+    #     balloon.bind(self.tree, '双击进行股票操作')
 
     def set_tree_items(self, queue_value):
         items = self.tree.get_children()

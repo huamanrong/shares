@@ -5,9 +5,9 @@ from shares.share_build.login_build import LoginBuild
 
 
 def on_closing():
-    # if messagebox.askokcancel("退出", "确定要退出？"):
+    if messagebox.askokcancel("退出", "确定要退出？"):
         root.destroy()
-    # pass
+    pass
 
 
 if __name__ == '__main__':

@@ -48,5 +48,5 @@ class LoginServer:
 
 
 if __name__ == '__main__':
-    login_server = LoginServer('shanxiaojia', 'jiajia521', '')
+    login_server = LoginServer('xiaojia', 'jiajia521', '')
     login_server.register(10000)

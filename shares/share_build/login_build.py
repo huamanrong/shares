@@ -21,8 +21,8 @@ class LoginBuild:
         self.shares_user = None
         self.account = tk.StringVar()
         self.password = tk.StringVar()
-        self.account.set('xiaohu')
-        self.password.set('123456')
+        # self.account.set('xiaohu')
+        # self.password.set('123456')
         self.login_build()
 
     def login_build(self):

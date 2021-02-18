@@ -51,12 +51,13 @@ class HoldSharesListsServer:
                     price_list = [float(price) for price in price_list]
                     total_profit = round(price_list[0] * shares_msg[3] - shares_msg[2] * shares_msg[3], 2)
                     today_profit = round((price_list[0] - price_list[1]) * shares_msg[3], 2)
+                    today_profit_proportion = '{:.2%}'.format((price_list[0] - price_list[1])/price_list[1])
                     hold_shares_amount += price_list[0] * shares_msg[3]
                     sub_list.append(shares_msg[1])
                     sub_list.append(total_profit)
                     sub_list.append('%s/%s' % (shares_msg[2], price_list[0]))
                     sub_list.append(shares_msg[3])
-                    sub_list.append(today_profit)
+                    sub_list.append('%s / %s' % (today_profit, today_profit_proportion))
                     new_result.append(sub_list)
                 for index, sub_msg in enumerate(new_result):
                     shares_amount = float(sub_msg[2].split('/')[1]) * sub_msg[3]
