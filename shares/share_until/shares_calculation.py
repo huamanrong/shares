@@ -28,6 +28,29 @@ def price_calculation(cost, total_amount, type_, price, amount):
     return after_cost
 
 
+def today_profit_calculation(now_price, yesterday_price, now_amount, transaction_data):
+    '''
+    计算当天盈利
+    :param now_price: 当前价格或当天收盘价
+    :param yesterday_price: 昨日收盘价
+    :param now_amount: 当前股票数量
+    :param transaction_data:当日交易数据,如：(('隆基股份', 0, 100, 100.0, None), ('隆基股份', 1, 100, None, 101.0))
+    :return:
+    '''
+    today_profit = 0
+    amount = 0  # 当天卖出股票的数量
+    for sub in transaction_data:
+        if sub[1]:  # 卖
+            today_profit += (sub[4] - yesterday_price) * sub[2]
+            amount -= sub[2]
+            now_amount += sub[2]    # 为了得到昨日的股票数量
+        elif not sub[1]:  # 买
+            today_profit += (now_price - sub[3]) * sub[2]
+            now_amount -= sub[2]    # 为了得到昨日的股票数量
+    today_profit = today_profit + (now_price - yesterday_price) * (now_amount - amount)
+    return today_profit
+
+
 if __name__ == '__main__':
     print(price_calculation(100, 500, 0, 80, 500))
 

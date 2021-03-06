@@ -4,6 +4,7 @@ from tkinter import ttk
 from shares.share_build.toplevel_notebook.buy_notebook_build import BuyNotebookBuild
 from shares.share_build.toplevel_notebook.sell_notebook_build import SellNotebookBuild
 from shares.share_build.toplevel_notebook.details_notebook_build import DetailsNotebookBuild
+from shares.share_build.toplevel_notebook.quotation_notebook_build import QuotationNotebookBuild
 
 
 class SharesOperationNotebookBuild:
@@ -19,17 +20,19 @@ class SharesOperationNotebookBuild:
     def shares_operation_notebook(self):
         self.notebook = ttk.Notebook(self.root)
         self.notebook.pack(fill=tk.BOTH, expand="yes")
+        self.frame_quotation = ttk.Frame(self.notebook)
         self.frame_buy = ttk.Frame(self.notebook)
         self.frame_sell = ttk.Frame(self.notebook)
         self.frame_early_waining = ttk.Frame(self.notebook)
         self.frame_details = ttk.Frame(self.notebook)
         self.frame_logs = ttk.Frame(self.notebook)
+        self.notebook.add(self.frame_quotation, text="    行情    ")
         self.notebook.add(self.frame_buy, text="    买入    ")
         self.notebook.add(self.frame_sell, text="    卖出    ")
         self.notebook.add(self.frame_early_waining, text="    预警    ")
         self.notebook.add(self.frame_details, text=" 交易明细 ")
         self.notebook.add(self.frame_logs, text="    日志    ")
+        QuotationNotebookBuild(self.frame_quotation, self.logger, self.shares_name).quotation_note_build()
         BuyNotebookBuild(self.frame_buy, self.logger, self.shares_user, self.shares_name).buy_note_build()
         SellNotebookBuild(self.frame_sell, self.logger, self.shares_user, self.shares_name).sell_note_build()
-
         DetailsNotebookBuild(self.frame_details, self.logger, self.shares_user, self.shares_name).details_notebook_build()

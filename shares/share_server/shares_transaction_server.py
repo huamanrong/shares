@@ -78,7 +78,7 @@ class SharesTransactionServer:
         elif data['stop_profit_after_high_falls_proportion'] and not self.is_float(data['stop_profit_after_high_falls_proportion']):
             return 1, '由上而下止盈比例输入错误'
         select_symbol = 'SELECT `name`, symbol FROM all_shares WHERE `name`=%s or symbol=%s;'  # 查询输入的股票是否存在并获得名称和代码
-        symbol_result = execute_select_sql(database.conf, select_symbol, self.logger, data['name'], data['name'])
+        symbol_result = execute_select_sql(database.conf, select_symbol, self.logger, data['shares_name'], data['shares_name'])
         if not symbol_result:
             return 1, '股票名称或代码输入错误'
         select_surplus_money = 'select surplus_money from shares_user where id=%s;'
@@ -102,11 +102,8 @@ class SharesTransactionServer:
                 stop_profit_after_high_falls_proportion = stop_profit_after_high_falls_proportion if stop_profit_after_high_falls_proportion else result[0][6]
                 update_buy_already = 'update buy_already set cost=%s,real_cost=%s,amount=%s,stop_loss_price=%s,stop_profit_price=%s,stop_profit_after_high_falls_proportion=%s ' \
                                      'where id=%s;'
-                execute_change_sql(cnn, update_buy_already, self.logger, after_cost, after_real_cost, after_amount, result[0][0], stop_loss_price, stop_profit_price,
-                                   stop_profit_after_high_falls_proportion)
-                user_surplus_money = user_surplus_money - float(data['cost'])*int(data['amount'])
-                update_surplus_money = 'update shares_user set surplus_money=%s where id=%s'
-                execute_change_sql(cnn, update_surplus_money, self.logger, user_surplus_money, self.shares_user)
+                execute_change_sql(cnn, update_buy_already, self.logger, after_cost, after_real_cost, after_amount, stop_loss_price, stop_profit_price,
+                                   stop_profit_after_high_falls_proportion, result[0][0])
 
                 insert_transaction_records = '''
                 INSERT INTO transaction_records ( user_id, hold_share_id, type, `name`, symbol, cost, amount, reasons, transaction_date ) 
@@ -114,8 +111,6 @@ class SharesTransactionServer:
                 '''
                 execute_change_sql(cnn, insert_transaction_records, self.logger, self.shares_user, result[0][0], data['shares_name'], result[0][3], data['cost'],
                                    data['amount'], data['reasons'], data['date_time'])
-                commit_close(cnn)    # 执行数据库并关闭连接
-                return 0, '买入成功'
             else:
                 insert_buy_already = 'INSERT INTO buy_already ( user_id, `name`, symbol, cost, real_cost, amount, buying_reasons, stop_loss_price, stop_profit_price, ' \
                                      'stop_profit_after_high_falls_proportion, buy_datetime, `status` ) VALUE (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 1)'
@@ -129,6 +124,11 @@ class SharesTransactionServer:
                             '''
                 execute_change_sql(cnn, insert_transaction_records, self.logger, self.shares_user, insert_id, symbol_result[0][0], symbol_result[0][1], float(data['cost']),
                                    int(data['amount']), data['reasons'], data['date_time'])
+            user_surplus_money = user_surplus_money - float(data['cost']) * int(data['amount'])
+            update_surplus_money = 'update shares_user set surplus_money=%s where id=%s'
+            execute_change_sql(cnn, update_surplus_money, self.logger, user_surplus_money, self.shares_user)
+            commit_close(cnn)  # 执行数据库并关闭连接
+            return 0, '买入成功'
         except:
             self.logger.exception('执行更新数据库操作失败')
             mysql_rollback(cnn)     # 如果执行报错就回滚并关闭数据库
@@ -163,7 +163,7 @@ class SharesTransactionServer:
                 after_real_cost = result[0][5]
                 selling_profit = (float(data['cost']) - after_real_cost) * int(data['amount'])
                 insert_transaction_records = '''
-                        INSERT INTO transaction_records ( user_id, hold_share_id, type, `name`, symbol, cost, amount, selling_profit, reasons, transaction_date) 
+                        INSERT INTO transaction_records ( user_id, hold_share_id, type, `name`, symbol, selling_price, amount, selling_profit, reasons, transaction_date) 
                         VALUE ( %s, %s, 1, %s, %s, %s, %s, %s, %s, %s)
                         '''
                 execute_change_sql(cnn, insert_transaction_records, self.logger, self.shares_user, result[0][0], result[0][3], result[0][4], float(data['cost']),

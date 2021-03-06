@@ -5,6 +5,8 @@ from tkinter import messagebox
 from shares.share_until.standard_logging import my_log
 from shares.share_server.login_server import LoginServer
 from shares.share_build.hold_shares_build import HoldSharesBuild
+from shares.share_build.shares_operation_buy_build import SharesOperationBuyBuild
+from shares.share_build.shares_operation_sell_build import SharesOperationSellBuild
 
 
 class LoginBuild:
@@ -21,8 +23,8 @@ class LoginBuild:
         self.shares_user = None
         self.account = tk.StringVar()
         self.password = tk.StringVar()
-        # self.account.set('xiaohu')
-        # self.password.set('123456')
+        self.account.set('xiaohu')
+        self.password.set('123456')
         self.login_build()
 
     def login_build(self):
@@ -73,11 +75,14 @@ class LoginBuild:
         file_menu.add_command(label='退出程序', command=self.quit)
 
         hold_share = HoldSharesBuild(self.root, self.frame_page, self.shares_user, self.logger)
+        share_buy = SharesOperationBuyBuild(self.root, self.frame_page, self.shares_user, self.logger)
+        share_sell = SharesOperationSellBuild(self.root, self.frame_page, self.shares_user, self.logger)
+
         operation_menu = Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label='股票操作', menu=operation_menu)
         operation_menu.add_command(label='持仓', command=hold_share.hold_shares_build)
-        operation_menu.add_command(label='买入', command='')
-        operation_menu.add_command(label='卖出', command='')
+        operation_menu.add_command(label='买入', command=share_buy.shares_operation_buy_build)
+        operation_menu.add_command(label='卖出', command=share_sell.shares_operation_sell_build)
         operation_menu.add_command(label='已清仓', command='')
 
         early_warning_menu = Menu(self.menu_bar, tearoff=0)

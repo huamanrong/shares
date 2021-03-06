@@ -42,8 +42,8 @@ class HoldSharesBuild:
         self.tree.column(1, anchor='center', width=100)
         self.tree.column(2, anchor='center', width=100)
         self.tree.column(3, anchor='center', width=100)
-        self.tree.column(4, anchor='center', width=100)
-        self.tree.column(5, anchor='center', width=100)
+        self.tree.column(4, anchor='center', width=120)
+        self.tree.column(5, anchor='center', width=80)
         self.tree.pack(expand=1, fill='both')
         create_thread(self.update_tree_items_loop)
 
