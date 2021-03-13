@@ -85,9 +85,11 @@ class SharesTransactionServer:
         user_surplus_money = execute_select_sql(database.conf, select_surplus_money, self.logger, self.shares_user)[0][0]
         if float(data['cost']) * int(data['amount']) > user_surplus_money:
             return 1, '买入金额大于用户剩余金额'
-        sql = "select id, cost, amount, symbol, stop_loss_price, stop_profit_price, stop_profit_after_high_falls_proportion, real_cost from buy_already where " \
-              "name=%s or symbol=%s and status=1 and user_id=%s ;"
+        sql = "SELECT id, cost, amount, symbol, stop_loss_price, stop_profit_price, stop_profit_after_high_falls_proportion, real_cost FROM " \
+              "buy_already WHERE `status` = 1 AND user_id = %s AND NAME = %s OR symbol = %s;"
+        print('user_id', self.shares_user)
         result = execute_select_sql(database.conf, sql, self.logger, data['shares_name'], data['shares_name'], self.shares_user)
+        print('result', result)
         cnn = get_connect(database.conf)  # 获取数据库连接
         stop_loss_price = float(data['stop_loss_price']) if data['stop_loss_price'] else None
         stop_profit_price = float(data['stop_profit_price']) if data['stop_profit_price'] else None

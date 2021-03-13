@@ -79,7 +79,7 @@ class HoldSharesListsServer:
                     hold_shares_amount += price_list[0] * shares_msg[3]
                     sub_list.append(shares_msg[1])
                     sub_list.append(total_profit)
-                    sub_list.append('%s/%s' % (shares_msg[2], price_list[0]))
+                    sub_list.append('%s/%s' % (shares_msg[2], round(price_list[0], 2)))
                     sub_list.append(shares_msg[3])
                     sub_list.append('%s / %s' % (round(today_profit, 2), today_profit_proportion))
                     new_result.append(sub_list)

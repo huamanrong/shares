@@ -1,8 +1,11 @@
 __author__ = '工具人'
 import os
+import time
 import tkinter as tk
 from PIL import Image, ImageTk
+from shares.share_until.creat_thread import create_thread
 from shares.share_server.get_quotation_photo_server import GetQuotationPhotoServer
+import threading
 
 
 class QuotationNotebookBuild:
@@ -12,15 +15,24 @@ class QuotationNotebookBuild:
         self.shares_name = shares_name
 
     def quotation_note_build(self):
+        self.photo_lable = tk.Label(self.root, bg='white')
+        self.photo_lable.pack()
+        create_thread(self.refresh_photo)
+
+    def refresh_photo(self):
         GetQuotationPhotoServer(self.logger, self.shares_name).get_min_quotation_photo()
-        parent_path = os.path.realpath(__file__).replace('\shar es\share_build\\toplevel_notebook\quotation_notebook_build.py', '')
-        print(parent_path)
-        image = Image.open(os.path.join(parent_path, '%s.jpg' % self.shares_name))  # 打开图片流
-        x, y = image.size
-        print(x, y)
-        # image = image.resize((545, int(450*(y/x))+20), Image.ANTIALIAS)
-        photo = ImageTk.PhotoImage(image)
-        l1 = tk.Label(self.root, bg='white')
-        l1.config(image=photo)
-        l1.image = photo
-        l1.pack()
+        while True:
+            if not os.path.exists('%s.jpg' % self.shares_name):
+                continue
+            image = Image.open('%s.jpg' % self.shares_name)  # 打开图片流
+            # x, y = image.size
+            # image = image.resize((450, int(400*(y/x))+20), Image.ANTIALIAS)
+            photo = ImageTk.PhotoImage(image)
+            self.photo_lable.config(image=photo)
+            self.photo_lable.image = photo
+            print('refresh_photo')
+            print('refresh_photo', threading.enumerate())
+            time.sleep(3)
+            GetQuotationPhotoServer(self.logger, self.shares_name).get_min_quotation_photo()
+
+

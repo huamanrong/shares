@@ -1,5 +1,6 @@
 __author__ = '工具人'
 import time
+import threading
 # import Pmw  # tkinter扩展包，需要导入
 import tkinter as tk
 from tkinter import ttk
@@ -68,13 +69,14 @@ class HoldSharesBuild:
     def update_tree_items_loop(self):
         hold_server = HoldSharesListsServer(self.shares_user, self.logger)
         while '工具人':
+            print(threading.enumerate())
             hold_server.get_items_value()
             queue_value = hold_server.work_queue.get()
-            print('queue_value', queue_value)
+            # print('queue_value', queue_value)
             hold_server.work_queue.task_done()
             # if queue_value:
             self.set_tree_items(queue_value)
-            time.sleep(10)
+            time.sleep(5)
 
     def on_closing(self):   # 子窗口关闭的回调函数
         del self.items_Toplevel[self.window]
