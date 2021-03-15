@@ -1,6 +1,5 @@
 from queue import Queue
 from shares.share_server import database
-from shares.share_until.creat_thread import create_thread
 from shares.share_until.shares_real_time_prices import Stock
 from shares.share_until.mysql_until import *
 from shares.share_until.shares_calculation import *

@@ -3,7 +3,7 @@ import os
 import time
 import tkinter as tk
 from PIL import Image, ImageTk
-from shares.share_until.creat_thread import create_thread
+from shares.share_until.thread_until import ThreadUntil
 from shares.share_server.get_quotation_photo_server import GetQuotationPhotoServer
 import threading
 
@@ -17,7 +17,9 @@ class QuotationNotebookBuild:
     def quotation_note_build(self):
         self.photo_lable = tk.Label(self.root, bg='white')
         self.photo_lable.pack()
-        create_thread(self.refresh_photo)
+        thread = ThreadUntil()
+        tid = thread.create_thread(self.refresh_photo)
+        thread.thread_dict['quotation_notebook_build'] = tid
 
     def refresh_photo(self):
         GetQuotationPhotoServer(self.logger, self.shares_name).get_min_quotation_photo()

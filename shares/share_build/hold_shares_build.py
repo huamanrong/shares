@@ -4,7 +4,7 @@ import threading
 # import Pmw  # tkinter扩展包，需要导入
 import tkinter as tk
 from tkinter import ttk
-from shares.share_until.creat_thread import create_thread
+from shares.share_until.thread_until import ThreadUntil
 from shares.share_server.hold_shares_lists_server import HoldSharesListsServer
 from shares.share_build.toplevel_notebook.shares_operation_notebook_build import SharesOperationNotebookBuild
 
@@ -18,8 +18,11 @@ class HoldSharesBuild:
         self.shares_user = shares_user
         self.logger = logger
         self.items_Toplevel = {}
+        self.thread = ThreadUntil()
 
     def hold_shares_build(self):
+        if 'hold_shares_build' in ThreadUntil.thread_dict.keys():
+            self.thread.stop_thread(ThreadUntil.thread_dict['hold_shares_build'])
         if self.frame_page['frame']:
             self.frame_page['frame'].destroy()
         self.frame_hold_shares= ttk.Frame(self.root)
@@ -46,7 +49,8 @@ class HoldSharesBuild:
         self.tree.column(4, anchor='center', width=120)
         self.tree.column(5, anchor='center', width=80)
         self.tree.pack(expand=1, fill='both')
-        create_thread(self.update_tree_items_loop)
+        tid = self.thread.create_thread(self.update_tree_items_loop)
+        ThreadUntil.thread_dict['hold_shares_build'] = tid      # 给ThreadUntil的静态属性thread_dict赋值
 
     # def tips_window(self, *args):
     #     balloon = Pmw.Balloon(self.frame_hold_shares)
@@ -79,6 +83,8 @@ class HoldSharesBuild:
             time.sleep(5)
 
     def on_closing(self):   # 子窗口关闭的回调函数
+        if 'quotation_notebook_build' in ThreadUntil.thread_dict.keys():
+            self.thread.stop_thread(ThreadUntil.thread_dict['quotation_notebook_build'])    # 停止线程
         del self.items_Toplevel[self.window]
         self.window.destroy()
 
@@ -93,6 +99,8 @@ class HoldSharesBuild:
             self.toplevel_build()
 
     def toplevel_build(self, *args):
+        if 'quotation_notebook_build' in ThreadUntil.thread_dict.keys():
+            self.thread.stop_thread(ThreadUntil.thread_dict['quotation_notebook_build'])
         self.window = tk.Toplevel(self.frame_hold_shares)
         self.items_Toplevel[self.window] = self.tree.focus()
         screenwidth = self.root.winfo_screenwidth()  # 获取屏幕的宽度，高度是 winfo_screenheight

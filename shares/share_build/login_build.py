@@ -5,6 +5,7 @@ from tkinter import messagebox
 from shares.share_until.standard_logging import my_log
 from shares.share_server.login_server import LoginServer
 from shares.share_build.hold_shares_build import HoldSharesBuild
+from shares.share_until.thread_until import ThreadUntil
 from shares.share_build.shares_operation_buy_build import SharesOperationBuyBuild
 from shares.share_build.shares_operation_sell_build import SharesOperationSellBuild
 
@@ -25,9 +26,11 @@ class LoginBuild:
         self.password = tk.StringVar()
         self.account.set('xiaohu')
         self.password.set('123456')
+        self.thread = ThreadUntil()
         self.login_build()
 
     def login_build(self):
+        [self.thread.stop_thread(tid) for tid in ThreadUntil.thread_dict.values()]
         self.frame_login = tk.Frame(self.root)
         self.frame_page['frame'] = self.frame_login
         self.frame_login.pack(expand='yes', fill=tk.BOTH)

@@ -3,6 +3,7 @@ __author__ = '工具人'
 import time
 import tkinter as tk
 from tkinter import ttk, messagebox
+from shares.share_until.thread_until import ThreadUntil
 from shares.share_server.shares_transaction_server import SharesTransactionServer
 time_list = time.strftime('%Y,%m,%d,%H').split(',')
 
@@ -28,8 +29,11 @@ class SharesOperationSellBuild:
         self.month.set(time_list[1])
         self.day.set(time_list[2])
         self.hour.set(time_list[3])
+        self.thread = ThreadUntil()
 
     def shares_operation_sell_build(self):
+        if 'hold_shares_build' in ThreadUntil.thread_dict.keys():
+            self.thread.stop_thread(ThreadUntil.thread_dict['hold_shares_build'])
         if self.frame_page['frame']:
             self.frame_page['frame'].destroy()
         self.frame_sell = ttk.Frame(self.root)
